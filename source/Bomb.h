@@ -51,7 +51,8 @@ public:
         setRndPosition();
         body.setSize(bombSize);
         body.setOrigin(bombSize.x / 2.0f - 25, bombSize.y / 2.0f - 30);
-        character.setString(word);
+
+        character.setString(this->word);
         character.setCharacterSize(20);
         character.setFont(*font);
         character.setFillColor(Color::Black);
