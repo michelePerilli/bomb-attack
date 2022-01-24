@@ -12,7 +12,7 @@ class Casa {
 private:
     RectangleShape casa;
 public:
-    Casa(Vector2i piece, Texture *texture, Vector2u pos, bool townHall) {
+    Casa(Vector2i piece, Texture *texture, Vector2u pos) {
         casa.setTexture(texture);
         if (piece.x < 5) casa.setTextureRect(IntRect(piece.x * 48, piece.y * 48, 48, 48));
         else casa.setTextureRect(IntRect((piece.x - 5) * 48, piece.y * 48, -48, 48));

@@ -8,6 +8,7 @@
 #include "Bomb.h"
 #include "Casa.h"
 #include "Constants.h"
+#include <ctime>
 
 class GameEngine {
 private:
@@ -145,52 +146,77 @@ private:
     }
 
     void spawnCity() {
-        int x = 0;
+        int writePosition = 0;
         for (int n = 0; n < 13; n++) {
-            if (n >= 7) x = 1;
             if (n != 6) {
+                uniform_int_distribution<int> distribution(0, 7);
+                int number = distribution(generator);
                 switch (rand() % 8) {
                     case 0:
-                        for (int i = 0; i < 2; i++)
-                            for (int j = 3; j >= 0; j--)
-                                city.emplace_back(Vector2i(2 - i + 5, j), &houseTexture, Vector2u(i + x + 2 * n, j),
-                                                  false);
+                        generateBigHouse(writePosition, true);
                         break;
                     case 1:
-                        for (int i = 0; i < 2; i++)
-                            for (int j = 3; j >= 0; j--)
-                                city.emplace_back(Vector2i(i, j), &houseTexture, Vector2u(i + x + 2 * n, j), false);
+                        generateBigHouse(writePosition, false);
                         break;
                     case 2:
                     case 3:
-                        for (int i = 2; i < 4; i++)
-                            for (int j = 1; j >= 0; j--)
-                                city.emplace_back(Vector2i(4 - i + 7, j), &houseTexture,
-                                                  Vector2u(i + x + 2 * n - 2, j + 2),
-                                                  false);
-                        break;
+                        generateMiniHouse(writePosition, true);
                     case 4:
-                        for (int i = 2; i < 4; i++)
-                            for (int j = 1; j >= 0; j--)
-                                city.emplace_back(Vector2i(i, j), &houseTexture, Vector2u(i + x + 2 * n - 2, j + 2),
-                                                  false);
+                        generateMiniHouse(writePosition, false);
                         break;
                     case 5:
                     case 6:
-                        for (int i = 2; i < 4; i++)
-                            for (int j = 3; j >= 2; j--)
-                                city.emplace_back(Vector2i(4 - i + 7, j), &houseTexture, Vector2u(i + x + 2 * n - 2, j),
-                                                  false);
+                        generateSmallHouse(writePosition, true);
                         break;
                     case 7:
-                        for (int i = 2; i < 4; i++)
-                            for (int j = 3; j >= 2; j--)
-                                city.emplace_back(Vector2i(i, j), &houseTexture, Vector2u(i + x + 2 * n - 2, j), false);
+                        generateSmallHouse(writePosition, false);
                         break;
+                    default:
+                        return;
                 }
-            } else;//for (int i = 0; i < 3; i++) for (int j = 3; j >= 0; j--) Case.push_back(Casa(Vector2i(i, j), nullptr, Vector2u(i + x + 2 * n, j), false));
+                writePosition += 2;
+            } else {
+                generateTownHall(writePosition, false);
+                writePosition += 3;
+            }
         }
     }
+
+    void generateBigHouse(int position, bool flip) {
+        for (int i = 0; i < 2; i++)
+            for (int j = 3; j >= 0; j--) {
+                int x = flip ? 2 - i + 5 : i;
+                city.emplace_back(Vector2i(x, j),
+                                  &houseTexture,
+                                  Vector2u(i + position, j));
+            }
+    }
+
+    void generateSmallHouse(int position, bool flip) {
+        for (int i = 2; i < 4; i++)
+            for (int j = 1; j >= 0; j--) {
+                int x = flip ? 4 - i + 7 : i;
+                city.emplace_back(Vector2i(x, j), &houseTexture,
+                                  Vector2u(i + position - 2, j + 2));
+            }
+    }
+
+    void generateMiniHouse(int position, bool flip) {
+        for (int i = 2; i < 4; i++)
+            for (int j = 3; j >= 2; j--) {
+                int x = flip ? 4 - i + 7 : i;
+                city.emplace_back(Vector2i(4 - i + 7, j),
+                                  &houseTexture,
+                                  Vector2u(i + position - 2, j));
+            }
+    }
+
+    void generateTownHall(int position, bool flip) {//todo flip
+        for (int i = 0; i < 3; i++)
+            for (int j = 3; j >= 0; j--)
+                city.emplace_back(Vector2i(i, j), nullptr, Vector2u(i + position, j));
+    }
+
 };
 
 
