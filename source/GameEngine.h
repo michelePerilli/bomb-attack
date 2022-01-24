@@ -149,8 +149,8 @@ private:
         int writePosition = 0;
         for (int n = 0; n < 13; n++) {
             if (n != 6) {
-                uniform_int_distribution<int> distribution(0, 7);
-                int number = distribution(generator);
+//                uniform_int_distribution<int> distribution(0, 7);
+//                int number = distribution(generator);
                 switch (rand() % 8) {
                     case 0:
                         generateBigHouse(writePosition, true);
@@ -205,7 +205,7 @@ private:
         for (int i = 2; i < 4; i++)
             for (int j = 3; j >= 2; j--) {
                 int x = flip ? 4 - i + 7 : i;
-                city.emplace_back(Vector2i(4 - i + 7, j),
+                city.emplace_back(Vector2i(x, j),
                                   &houseTexture,
                                   Vector2u(i + position - 2, j));
             }
@@ -213,8 +213,10 @@ private:
 
     void generateTownHall(int position, bool flip) {//todo flip
         for (int i = 0; i < 3; i++)
-            for (int j = 3; j >= 0; j--)
-                city.emplace_back(Vector2i(i, j), nullptr, Vector2u(i + position, j));
+            for (int j = 3; j >= 0; j--) {
+                int x = flip ? 3 - i + 5 : i;
+                city.emplace_back(Vector2i(x, j), nullptr, Vector2u(i + position, j));
+            }
     }
 
 };
