@@ -42,7 +42,7 @@ private:
 
 public:
     GameEngine() {
-        window.create(VideoMode(winX, winY), "Bomb Attack", Style::Close | Style::Fullscreen);
+        window.create(VideoMode(winX, winY), "Bomb Attack", Style::Close);
         view.setCenter(Vector2f(0.0f, 0.0f));
         view.setSize(Vector2f(float(winX), float(winY)));
 
@@ -60,6 +60,7 @@ public:
         points.setCharacterSize(10);
         points.setFillColor(Color::Black);
         points.setFont(font);
+        points.setPosition(-Vector2f(float(winX) / 2, float(winY) / 2));
 
         loseImage.setTexture(&losing);
         loseImage.setOrigin(Vector2f(float(winX) / 4, float(winX) / 4));

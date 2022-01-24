@@ -18,7 +18,7 @@ private:
     Vector2f velocity;
     Vector2u bombAnim;
 
-    float totalTime, switchTime;
+    float totalTime, switchTime, animTimer;
 
     BombType type;
     RectangleShape body;
@@ -29,13 +29,17 @@ private:
 
 public:
     Bomb(Texture *texture, BombType type, float speed, Font *font, char word, float switchTime) {
+        generator.seed(time(nullptr));
+        animTimer = 0;
+        if (type == (BombType) NULL)
+            setRndType();
+        else
+            this->type = type;
 
-
-        if (type == (BombType) NULL) setRndType();
-        else this->type = type;
-
-        if (word == (char) NULL) setRndWord();
-        else this->word = word;
+        if (word == (char) NULL)
+            setRndWord();
+        else
+            this->word = word;
 
         this->switchTime = switchTime;
         totalTime = 0.0f;
@@ -60,18 +64,31 @@ public:
     ~Bomb() = default;
 
     void update(float deltaTime) {
+        updatePosition(deltaTime);
+        updateAnimation();
+    }
+
+    void updatePosition(float deltaTime) {
         totalTime += deltaTime;
 
         if (totalTime >= switchTime) {
             totalTime -= switchTime;
-            bombAnim.x++;
-            if (bombAnim.x > 2) bombAnim.x = 0;
-            body.setTextureRect(IntRect((int) bombAnim.x * 76, 0 * 148, 76, 148));
             body.move(Vector2f(velocity * deltaTime));
             character.setPosition(Vector2f(body.getPosition().x + 25, body.getPosition().y + 60));
         }
-
     }
+
+    void updateAnimation() {
+        animTimer += 2;
+        if (animTimer >= 100) {
+            animTimer -= 100;
+            bombAnim.x++;
+            if (bombAnim.x > 2)
+                bombAnim.x = 0;
+            body.setTextureRect(IntRect((int) bombAnim.x * 76, 0 * 148, 76, 148));
+        }
+    }
+
 
     void draw(RenderWindow &window) {
         update(switchTime / 10.0f);
