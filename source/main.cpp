@@ -1,6 +1,11 @@
 #include "Bomb.h"
 #include "Casa.h"
 
+#define IMG_BOMB_PATH "../data/images/bombe.png"
+#define IMG_HOUSE_PATH "../data/images/house.png"
+#define IMG_BACKGROUND_PATH "../data/images/sfondo.png"
+#define OTF_ADOBE_GOTHIC_BOLD_PATH "../data/fonts/AdobeGothicStd-Bold.otf"
+
 static const unsigned int winX = 1366, winY = 768; //Dimensione finestra
 
 void resizeView(const RenderWindow &window, View &view) //Funzione settaggio camera
@@ -56,7 +61,7 @@ void spawnCity(vector<Casa> &Case, Texture &houseTexture) {
 
 void lose(RenderWindow &window) {
     Texture losing;
-    losing.loadFromFile("../bin/images/lose.png");
+    losing.loadFromFile("../data/images/lose.png");
     RectangleShape loseImage;
     loseImage.setTexture(&losing);
     loseImage.setOrigin(Vector2f(float(winX) / 4, float(winX) / 4));
@@ -71,13 +76,13 @@ int main() {
     RenderWindow window(VideoMode(winX, winY), "Bomb Attack", Style::Close | Style::Fullscreen);
 
     Texture bombTexture;
-    bombTexture.loadFromFile("../bin/images/bombe.png");
+    bombTexture.loadFromFile(IMG_BOMB_PATH);
     Texture houseTexture;
-    houseTexture.loadFromFile("../bin/images/house.png");
+    houseTexture.loadFromFile(IMG_HOUSE_PATH);
     Texture sfondo;
-    sfondo.loadFromFile("../bin/images/sfondo.png");
+    sfondo.loadFromFile(IMG_BACKGROUND_PATH);
     Font font;
-    font.loadFromFile("../bin/fonts/AdobeGothicStd-Bold.otf");
+    font.loadFromFile(OTF_ADOBE_GOTHIC_BOLD_PATH);
 
     RectangleShape Sfondo;
     Sfondo.setTexture(&sfondo);
@@ -93,11 +98,11 @@ int main() {
 
 
     View view(Vector2f(0.0f, 0.0f), Vector2f(float(winX), float(winY)));
-    vector<Casa> Case;
+    vector<Casa> houses;
 
-    spawnCity(Case, houseTexture);
+    spawnCity(houses, houseTexture);
 
-    vector<Bomb> Bombs;
+    vector<Bomb> bombs;
 
     bool lost = false;
     float tot = 0, delta = 0.1f, swi = 50;
@@ -126,7 +131,7 @@ int main() {
             tot -= swi;
             std::uniform_int_distribution<int> distribution(0, 29);
             int number = distribution(generator);
-            Bombs.emplace_back(&bombTexture, easy, ((float) number / 10.0f) + 1.0f, &font, NULL, 10.0f);
+            bombs.emplace_back(&bombTexture, easy, ((float) number / 10.0f) + 1.0f, &font, NULL, 10.0f);
             bombe++;
         }
 
@@ -136,8 +141,8 @@ int main() {
             window.draw(Sfondo);
             tot += delta;
 
-            for (Casa &casa : Case) {
-                for (Bomb &bomb : Bombs) {
+            for (Casa &casa : houses) {
+                for (Bomb &bomb : bombs) {
                     if (casa.getCollider().isColliding(bomb.getCollider(), Vector2f(0.0f, 0.0f), 1.0f)) {
                         casa.destroy();
                         bomb.setRndPosition();
@@ -151,10 +156,10 @@ int main() {
             }
 
 
-            for (Casa &casa : Case)
+            for (Casa &casa : houses)
                 casa.draw(window);
 
-            for (Bomb &bomb : Bombs)
+            for (Bomb &bomb : bombs)
                 bomb.draw(window);
 
         } else lose(window);
