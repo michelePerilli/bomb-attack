@@ -7,12 +7,7 @@
 #include <SFML/Graphics.hpp>
 #include "Bomb.h"
 #include "Casa.h"
-
-#define IMG_BOMB_PATH "../data/images/bombe.png"
-#define IMG_HOUSE_PATH "../data/images/house.png"
-#define IMG_BACKGROUND_PATH "../data/images/sfondo.png"
-#define IMG_LOST_PATH "../data/images/lose.png"
-#define OTF_ADOBE_GOTHIC_BOLD_PATH "../data/fonts/AdobeGothicStd-Bold.otf"
+#include "Constants.h"
 
 class GameEngine {
 private:

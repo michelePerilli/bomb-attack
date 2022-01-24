@@ -3,7 +3,7 @@
 #include <ctime>
 #include <random>
 #include "Collider.h"
-
+#include "Constants.h"
 
 enum BombType {
     easy, medium, hard, heavy
@@ -19,6 +19,9 @@ private:
     Vector2u bombAnim;
 
     float totalTime, switchTime, animTimer;
+
+    Texture bombTexture;
+    Font font;
 
     BombType type;
     RectangleShape body;
@@ -36,10 +39,7 @@ public:
         else
             this->type = type;
 
-        if (word == (char) NULL)
-            setRndWord();
-        else
-            this->word = word;
+        setRndWord();
 
         this->switchTime = switchTime;
         totalTime = 0.0f;
