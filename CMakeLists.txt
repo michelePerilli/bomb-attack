@@ -8,7 +8,7 @@ add_executable(bomb-attack
         source/Bomb.h
         source/Casa.h
         source/Collider.h
-        source/main.cpp source/GameEngine.h source/Constants.h)
+        source/main.cpp source/GameEngine.h source/Constants.h source/Entity.h)
 
 install(TARGETS ${PROJECT_NAME} DESTINATION source)
 

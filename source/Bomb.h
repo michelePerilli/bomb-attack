@@ -10,7 +10,8 @@ enum BombType {
 };
 
 class Bomb {
-
+#define IMG_BOMB_WIDTH 76
+#define IMG_BOMB_HEIGHT 148
 
 private:
     const Vector2f bombSize{50.0f, 100.0f};
@@ -19,9 +20,6 @@ private:
     Vector2u bombAnim;
 
     float totalTime, switchTime, animTimer;
-
-    Texture bombTexture;
-    Font font;
 
     BombType type;
     RectangleShape body;
@@ -86,7 +84,7 @@ public:
             bombAnim.x++;
             if (bombAnim.x > 2)
                 bombAnim.x = 0;
-            body.setTextureRect(IntRect((int) bombAnim.x * 76, 0 * 148, 76, 148));
+            body.setTextureRect(IntRect((int) bombAnim.x * IMG_BOMB_WIDTH, 0 * IMG_BOMB_HEIGHT, IMG_BOMB_WIDTH, IMG_BOMB_HEIGHT));
         }
     }
 

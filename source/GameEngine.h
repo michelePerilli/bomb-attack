@@ -29,6 +29,8 @@ private:
 
     std::default_random_engine generator;
 
+
+
     bool lost = false;
     float tot = 0.0f, delta = 0.1f, swi = 50.0f;
 
