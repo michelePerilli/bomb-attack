@@ -6,9 +6,9 @@ cmake_policy(SET CMP0074 NEW)
 
 add_executable(bomb-attack
         source/Bomb.h
-        source/Casa.h
+        source/House.h
         source/Collider.h
-        source/main.cpp source/GameEngine.h source/Constants.h source/Entity.h)
+        source/main.cpp source/GameEngine.h source/Constants.h source/Entity.h source/Block.h)
 
 install(TARGETS ${PROJECT_NAME} DESTINATION source)
 

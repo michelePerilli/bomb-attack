@@ -4,39 +4,34 @@
 #include <random>
 #include "Collider.h"
 #include "Constants.h"
+#include "Entity.h"
 
 enum BombType {
     easy, medium, hard, heavy
 };
 
-class Bomb {
-#define IMG_BOMB_WIDTH 76
-#define IMG_BOMB_HEIGHT 148
+class Bomb : Entity {
+
 
 private:
-    const Vector2f bombSize{50.0f, 100.0f};
 
     Vector2f velocity;
     Vector2u bombAnim;
 
-    float totalTime, switchTime, animTimer;
+    float totalTime, switchTime, animTicks;
 
     BombType type;
-    RectangleShape body;
     Text character;
     char word;
 
-    std::default_random_engine generator;
-
 public:
-    Bomb(Texture *texture, BombType type, float speed, Font *font, char word, float switchTime) {
-        generator.seed(time(nullptr));
-        animTimer = 0;
-        if (type == (BombType) NULL)
-            setRndType();
-        else
-            this->type = type;
+    Bomb(Texture *texture, Font *font, Vector2i size, float speed, float switchTime)
+            : Entity(texture, Vector2i(0, -500), size) {
 
+
+        animTicks = 0;
+
+        setRndType();
         setRndWord();
 
         this->switchTime = switchTime;
@@ -47,8 +42,7 @@ public:
         bombAnim = {0, 0};
 
         setRndPosition();
-        body.setSize(bombSize);
-        body.setOrigin(bombSize.x / 2.0f - 25, bombSize.y / 2.0f - 30);
+        body.setOrigin(float(size.x) / 2.0f - 25, float(size.y) / 2.0f - 30);
 
         character.setString(this->word);
         character.setCharacterSize(20);
@@ -57,7 +51,6 @@ public:
         character.setOrigin(Vector2f(character.getLocalBounds().left + character.getLocalBounds().width / 2.0f,
                                      character.getLocalBounds().top + character.getLocalBounds().height / 2.0f));
 
-        body.setTexture(texture);
     }
 
     ~Bomb() = default;
@@ -78,13 +71,14 @@ public:
     }
 
     void updateAnimation() {
-        animTimer += 2;
-        if (animTimer >= 100) {
-            animTimer -= 100;
+        animTicks += 2;
+        if (animTicks >= 100) {
+            animTicks -= 100;
             bombAnim.x++;
             if (bombAnim.x > 2)
                 bombAnim.x = 0;
-            body.setTextureRect(IntRect((int) bombAnim.x * IMG_BOMB_WIDTH, 0 * IMG_BOMB_HEIGHT, IMG_BOMB_WIDTH, IMG_BOMB_HEIGHT));
+            body.setTextureRect(
+                    IntRect((int) bombAnim.x * IMG_BOMB_WIDTH, 0 * IMG_BOMB_HEIGHT, IMG_BOMB_WIDTH, IMG_BOMB_HEIGHT));
         }
     }
 

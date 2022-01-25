@@ -6,7 +6,7 @@
 
 #include <SFML/Graphics.hpp>
 #include "Bomb.h"
-#include "Casa.h"
+#include "House.h"
 #include "Constants.h"
 #include <ctime>
 
@@ -24,12 +24,12 @@ private:
     Text points;
     Font font;
 
-    vector<Casa> city;
+    vector<House> city;
     vector<Bomb> bombs;
 
     std::default_random_engine generator;
 
-
+    Vector2i bombsSize = {ENTITY_SIZE, ENTITY_SIZE * 2};
 
     bool lost = false;
     float tot = 0.0f, delta = 0.1f, swi = 50.0f;
@@ -89,7 +89,9 @@ public:
                         break;
                 }
             }
-            if (Keyboard::isKeyPressed(Keyboard::Escape)) window.close();
+
+            if (Keyboard::isKeyPressed(Keyboard::Escape))
+                window.close();
 
             window.clear();
 
@@ -97,7 +99,7 @@ public:
                 tot -= swi;
                 std::uniform_int_distribution<int> distribution(0, 29);
                 int number = distribution(generator);
-                bombs.emplace_back(&bombTexture, easy, ((float) number / 10.0f) + 1.0f, &font, NULL, 10.0f);
+                bombs.emplace_back(Bomb(&bombTexture, &font, bombsSize, ((float) number / 10.0f) + 1.0f, 10.0f));
                 bombCount++;
             }
 
@@ -107,27 +109,29 @@ public:
                 window.draw(background);
                 tot += delta;
 
-                for (Casa &casa : city) {
-                    for (Bomb &bomb : bombs) {
-                        if (casa.getCollider().isColliding(bomb.getCollider(), Vector2f(0.0f, 0.0f), 1.0f)) {
-                            casa.destroy();
-                            bomb.setRndPosition();
-                        }
-                        if (bomb.getPosition().y > 350.0f) lost = true;
-                        if (Keyboard::isKeyPressed((Keyboard::Key)(bomb.getCharacter() - 65))) {
-                            bomb.reset();
-                            pointCount++;
+                for (House &casa : city) {
+                    for (Block &block : *casa.getBlockList()) {
+                        for (Bomb &bomb : bombs) {
+                            if (block.getCollider().isColliding(bomb.getCollider(), Vector2f(0.0f, 0.0f), 1.0f)) {
+                                block.destroy();
+                                bomb.setRndPosition();
+                            }
+                            if (bomb.getPosition().y > 350.0f) lost = true;
+                            if (Keyboard::isKeyPressed((Keyboard::Key) (bomb.getCharacter() - 65))) {
+                                bomb.reset();
+                                pointCount++;
+                            }
                         }
                     }
+
+
+                    for (House &house : city)
+                        house.draw(window);
+
+                    for (Bomb &bomb : bombs)
+                        bomb.draw(window);
+
                 }
-
-
-                for (Casa &casa : city)
-                    casa.draw(window);
-
-                for (Bomb &bomb : bombs)
-                    bomb.draw(window);
-
             } else {
                 lose();
             }
@@ -141,7 +145,8 @@ public:
 
 
 private:
-    //Funzione settaggio camera
+
+//Funzione settaggio camera
     void resizeView() {
         float aspRatioX = float(window.getSize().x) / float(window.getSize().y);
         view.setSize(float(winX) * aspRatioX, float(winX));
@@ -151,75 +156,16 @@ private:
         int writePosition = 0;
         for (int n = 0; n < 13; n++) {
             if (n != 6) {
-//                uniform_int_distribution<int> distribution(0, 7);
-//                int number = distribution(generator);
-                switch (rand() % 8) {
-                    case 0:
-                        generateBigHouse(writePosition, true);
-                        break;
-                    case 1:
-                        generateBigHouse(writePosition, false);
-                        break;
-                    case 2:
-                    case 3:
-                        generateMiniHouse(writePosition, true);
-                    case 4:
-                        generateMiniHouse(writePosition, false);
-                        break;
-                    case 5:
-                    case 6:
-                        generateSmallHouse(writePosition, true);
-                        break;
-                    case 7:
-                        generateSmallHouse(writePosition, false);
-                        break;
-                    default:
-                        return;
-                }
+
+                city.emplace_back(House(&houseTexture, (HouseType) (rand() % 3), writePosition));
                 writePosition += 2;
             } else {
-                generateTownHall(writePosition, false);
+                city.emplace_back(House(&houseTexture, townhall, writePosition));
                 writePosition += 3;
             }
         }
     }
 
-    void generateBigHouse(int position, bool flip) {
-        for (int i = 0; i < 2; i++)
-            for (int j = 3; j >= 0; j--) {
-                int x = flip ? 2 - i + 5 : i;
-                city.emplace_back(Vector2i(x, j),
-                                  &houseTexture,
-                                  Vector2u(i + position, j));
-            }
-    }
-
-    void generateSmallHouse(int position, bool flip) {
-        for (int i = 2; i < 4; i++)
-            for (int j = 1; j >= 0; j--) {
-                int x = flip ? 4 - i + 7 : i;
-                city.emplace_back(Vector2i(x, j), &houseTexture,
-                                  Vector2u(i + position - 2, j + 2));
-            }
-    }
-
-    void generateMiniHouse(int position, bool flip) {
-        for (int i = 2; i < 4; i++)
-            for (int j = 3; j >= 2; j--) {
-                int x = flip ? 4 - i + 7 : i;
-                city.emplace_back(Vector2i(x, j),
-                                  &houseTexture,
-                                  Vector2u(i + position - 2, j));
-            }
-    }
-
-    void generateTownHall(int position, bool flip) {//todo flip
-        for (int i = 0; i < 3; i++)
-            for (int j = 3; j >= 0; j--) {
-                int x = flip ? 3 - i + 5 : i;
-                city.emplace_back(Vector2i(x, j), nullptr, Vector2u(i + position, j));
-            }
-    }
 
 };
 
