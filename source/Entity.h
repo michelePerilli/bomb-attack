@@ -15,6 +15,7 @@ public:
     Entity(Texture *texture, Vector2i pos, Vector2i size) {
         body.setTexture(texture);
         body.setSize(Vector2f((float) size.x, (float) size.y));
+        body.setOrigin(Vector2f((float) size.x/2, (float) size.y/2));
         body.setPosition(Vector2f((float) pos.x, (float) pos.y));
         generator.seed(time(nullptr));
     }

@@ -16,17 +16,15 @@ using namespace std;
 class Block : Entity {
 
 public:
-    Block(Vector2i piece, Texture *texture, Vector2i pos)
+    Block(Texture *texture, Vector2i piece, Vector2i pos)
             : Entity(texture, pos, Vector2i(ENTITY_SIZE, ENTITY_SIZE)) {
 
-        //if (piece.x < 5)
-            body.setTextureRect(
-                    IntRect(piece.x * IMG_BLOCK_WIDTH, piece.y * IMG_BLOCK_HEIGHT,
-                            IMG_BLOCK_WIDTH, IMG_BLOCK_HEIGHT));
-//        else
-//            body.setTextureRect(IntRect((piece.x - 5) * IMG_BLOCK_WIDTH,piece.y * IMG_BLOCK_HEIGHT,
-//                                         -IMG_BLOCK_WIDTH, IMG_BLOCK_HEIGHT));
-        body.setPosition(Vector2f((float) (pos.x * 50) - 675, (float) (pos.y * 50) + 183));
+        body.setTextureRect(IntRect(piece.x * IMG_BLOCK_WIDTH,
+                                    (5 - piece.y) * IMG_BLOCK_HEIGHT,
+                                    -IMG_BLOCK_WIDTH,
+                                    IMG_BLOCK_HEIGHT));
+
+        body.setPosition(Vector2f((float) -(pos.x * 50) - 33, (float) -(pos.y * 50)));
     }
 
     ~Block() = default;

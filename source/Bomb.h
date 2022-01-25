@@ -33,6 +33,7 @@ public:
 
         setRndType();
         setRndWord();
+        setRndPosition();
 
         this->switchTime = switchTime;
         totalTime = 0.0f;
@@ -41,8 +42,7 @@ public:
         velocity.y = speed;
         bombAnim = {0, 0};
 
-        setRndPosition();
-        body.setOrigin(float(size.x) / 2.0f - 25, float(size.y) / 2.0f - 30);
+//        body.setOrigin(float(size.x) / 2.0f - 25, float(size.y) / 2.0f - 30);
 
         character.setString(this->word);
         character.setCharacterSize(20);
@@ -66,7 +66,7 @@ public:
         if (totalTime >= switchTime) {
             totalTime -= switchTime;
             body.move(Vector2f(velocity * deltaTime));
-            character.setPosition(Vector2f(body.getPosition().x + 25, body.getPosition().y + 60));
+            character.setPosition(Vector2f(body.getPosition().x, body.getPosition().y + 30));
         }
     }
 
@@ -113,10 +113,10 @@ public:
     }
 
     void setRndPosition() {
-        std::uniform_int_distribution<int> distribution(0, 25);
+        std::uniform_int_distribution<int> distribution(0, 26);
         int number = distribution(generator);
         // Non mi ricordo assolutamente che razza di calcolo era
-        body.setPosition(Vector2f((float) ((number - 13) * 50) - 25, -500));
+        body.setPosition(Vector2f((float) -(number * 50) - 33, -1000));
         character.setPosition(body.getPosition());
     }
 

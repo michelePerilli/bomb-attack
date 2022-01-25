@@ -12,7 +12,11 @@
 
 class GameEngine {
 private:
-    unsigned int winX = 1366, winY = 768; //Dimensione finestra
+    static const unsigned int winX = 1366;
+    static const unsigned int winY = 768; //Dimensione finestra
+
+    Vector2f origin;
+
     RenderWindow window;
     Texture bombTexture;
     Texture houseTexture;
@@ -40,8 +44,10 @@ private:
 
 public:
     GameEngine() {
+        origin = Vector2f(-float(winX) / 2, -float(winY) / 2);
+
         window.create(VideoMode(winX, winY), "Bomb Attack", Style::Close);
-        view.setCenter(Vector2f(0.0f, 0.0f));
+        view.setCenter(origin);
         view.setSize(Vector2f(float(winX), float(winY)));
 
         bombTexture.loadFromFile(IMG_BOMB_PATH);
@@ -52,19 +58,18 @@ public:
 
         background.setTexture(&foreground);
         background.setSize(Vector2f(2048 * 1.1f, 768 * 1.1f));
-        background.setOrigin(Vector2f(1012 * 1.1f, 359 * 1.1f));
+        background.setOrigin(Vector2f(2048 * 1.1f, 768 * 1.1f));
         background.setPosition(Vector2f(0, 0));
+
+        loseImage.setTexture(&losing);
+        loseImage.setOrigin(Vector2f(float(winX) / 2, float(winX) / 2));
+        loseImage.setSize(Vector2f(float(winX) / 4, float(winX) / 4));
+        loseImage.setPosition(Vector2f(0, 0));
 
         points.setCharacterSize(10);
         points.setFillColor(Color::Black);
         points.setFont(font);
-        points.setPosition(-Vector2f(float(winX) / 2, float(winY) / 2));
-
-        loseImage.setTexture(&losing);
-        loseImage.setOrigin(Vector2f(float(winX) / 4, float(winX) / 4));
-        loseImage.setPosition(Vector2f(0, 0));
-        loseImage.setSize(Vector2f(float(winX) / 2, float(winX) / 2));
-
+        points.setPosition(-Vector2f(float(winX), float(winY)));
 
     }
 
@@ -116,7 +121,10 @@ public:
                                 block.destroy();
                                 bomb.setRndPosition();
                             }
-                            if (bomb.getPosition().y > 350.0f) lost = true;
+                            if (bomb.getPosition().y > 0) {
+                                // start some kind of animation
+                                lost = true;
+                            }
                             if (Keyboard::isKeyPressed((Keyboard::Key) (bomb.getCharacter() - 65))) {
                                 bomb.reset();
                                 pointCount++;
@@ -135,7 +143,11 @@ public:
             } else {
                 lose();
             }
-
+            RectangleShape center;
+            center.setSize(Vector2f(10, 10));
+            center.setOrigin(Vector2f(5, 5));
+            center.setPosition(Vector2f(0, 0));
+            window.draw(center);
 
             points.setString(to_string(pointCount));
             window.draw(points);
@@ -160,7 +172,7 @@ private:
                 city.emplace_back(House(&houseTexture, (HouseType) (rand() % 3), writePosition));
                 writePosition += 2;
             } else {
-                city.emplace_back(House(&houseTexture, townhall, writePosition));
+                city.emplace_back(House(nullptr, townhall, writePosition));
                 writePosition += 3;
             }
         }
