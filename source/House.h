@@ -29,16 +29,16 @@ public:
         uniform_int_distribution<int> distribution(0, 1);
         switch (type) {
             case big:
-                generateBigHouse(distribution(generator));
+                generateBigHouse();
                 break;
             case small:
-                generateSmallHouse(distribution(generator));
+                generateNewHouse1();
                 break;
             case mini:
-                generateMiniHouse(distribution(generator));
+                generateNewHouse2();
                 break;
             case townhall:
-                generateTownHall(distribution(generator));
+                generateTownHall();
                 break;
         }
 
@@ -91,45 +91,63 @@ public:
             }
     }*/
 
-    void generateBigHouse(bool flip) {
+    void generateBigHouse() {
         house.clear();
+//        generateNewHouse1();
         for (int i = 0; i < 2; i++)
             for (int j = 3; j >= 0; j--) {
-                int z = flip ? 2 - i + 5 : i;
-                house.emplace_back(Block(Vector2i(z, j),
+//                int z = flip ? 2 - i + 5 : i;
+                house.emplace_back(Block(Vector2i(i, j),
                                          houseTexture,
                                          Vector2i(i + this->x, j)));
             }
     }
 
-    void generateSmallHouse(bool flip) {
+    void generateSmallHouse() {
         house.clear();
         for (int i = 2; i < 4; i++)
             for (int j = 1; j >= 0; j--) {
-                int z = flip ? 4 - i + 7 : i;
-                house.emplace_back(Block(Vector2i(z, j),
+                house.emplace_back(Block(Vector2i(i, j),
                                          houseTexture,
                                          Vector2i(i + this->x - 2, j + 2)));
             }
     }
 
-    void generateMiniHouse(bool flip) {
+    void generateMiniHouse() {
         house.clear();
         for (int i = 2; i < 4; i++)
             for (int j = 3; j >= 2; j--) {
-                int z = flip ? 4 - i + 7 : i;
-                house.emplace_back(Block(Vector2i(z, j),
+                house.emplace_back(Block(Vector2i(i, j),
                                          houseTexture,
                                          Vector2i(i + this->x - 2, j)));
             }
     }
 
-    void generateTownHall(bool flip) {
+    void generateTownHall() {
         house.clear();
         for (int i = 0; i < 3; i++)
             for (int j = 3; j >= 0; j--) {
-                int z = flip ? 3 - i + 5 : i;
-                house.emplace_back(Block(Vector2i(z, j), nullptr, Vector2i(i + this->x, j)));
+                house.emplace_back(Block(Vector2i(i, j), nullptr, Vector2i(i + this->x - 0, j)));
+            }
+    }
+
+    void generateNewHouse1() {
+        house.clear();
+        for (int i = 4; i < 6; i++)
+            for (int j = 2; j >= 0; j--) {
+                house.emplace_back(Block(Vector2i(i, j + 1),
+                                         houseTexture,
+                                         Vector2i(i + this->x - 4, j + 1)));
+            }
+    }
+
+    void generateNewHouse2() {
+        house.clear();
+        for (int i = 6; i < 8; i++)
+            for (int j = 2; j >= 0; j--) {
+                house.emplace_back(Block(Vector2i(i, j + 1),
+                                         houseTexture,
+                                         Vector2i(i + this->x - 6, j + 1)));
             }
     }
 
